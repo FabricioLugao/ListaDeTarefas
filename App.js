@@ -1,11 +1,45 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { useState } from "react";
+import {
+  Button,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import TarefaItem from "./components/TarefaItem";
+import TarefaInput from "./components/TarefaInput";
 
 export default function App() {
+  const [tarefas, setTarefas] = useState([]);
+
+  function adicionarTarefaManipulador(tarefaDigitada) {
+    setTarefas((tarefasAtuais) => [...tarefasAtuais, tarefaDigitada]);
+  }
+
+  function deletarTarefa(tarefaDeletada) {
+    setTarefas((tarefasAtuais) => {
+      return tarefasAtuais.filter((tarefa) => tarefa != tarefaDeletada);
+    });
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <TarefaInput onAdicionarTarefa={adicionarTarefaManipulador} />
+      <View style={styles.tarefasContainer}>
+        <FlatList
+          data={tarefas}
+          renderItem={(itemData) => {
+            return (
+              <TarefaItem
+                texto={itemData.item}
+                onDeleteTarefa={deletarTarefa}
+              />
+            );
+          }}
+        />
+      </View>
     </View>
   );
 }
@@ -13,8 +47,11 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    paddingTop: 50,
+    paddingHorizontal: 16,
+  },
+  tarefasContainer: {
+    flex: 7,
   },
 });
